@@ -1,0 +1,114 @@
+
+#include <iostream> // inclusion du header de la librairie C++ iostream (Input Output stream)
+#include <fstream>
+#include <sstream>
+#include <string.h>
+#include <vector>
+#include <stdio.h>
+using namespace std;
+
+int main()
+{
+    string filename("and_xor.dot");
+    vector<string> v(5); // def du vecteur de sortie pour le .dot
+    char spe = '{';
+    char space =' ';
+    stringstream key;
+    stringstream nom;
+
+  //cout << "Tapez un chemin : "; cin >> chemin;
+
+
+
+
+
+  //cout << chemin << endl;
+  //ifstream monFlux(chemin);
+  ifstream monFlux("and_xor.dot");  //Ouverture d'un fichier en lecture à partir du fichier relatif
+
+  if(monFlux) // si mon chemin est valide
+    {
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+      char buffer1[200]; // rempli de la saisie
+      for(int i(0); i<7; ++i)
+      {
+        monFlux.get(buffer1[i]);
+        key << buffer1[i];
+
+        //cout<< buffer1[i] <<endl;   //On additionne toutes les char
+      }
+      key<<endl;
+
+      if(strstr(buffer1, "digraph"))
+        {
+          cout<<"le fichier commence bien par le keyword digraph: on est dans le .dot"<<endl;
+          string keyword = key.str();
+          v[0]= keyword;
+          //cout << keyword<<endl;
+        }
+      else
+      {cout<<"erreur dans le keyword du fichier "<<endl;}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+      char buffer2[200]; // rempli de la saisie
+      for(int y(0); y<10; ++y)
+      {
+        monFlux.get(buffer2[y]);
+        if (buffer2[y]==spe)
+        {
+          break;
+        }
+        if (buffer2[y]!=space)
+
+        {nom << buffer2[y];}
+        //cout<< buffer2[y]<<endl;   //On additionne toutes les char
+      }
+      nom<<endl;
+      string name = nom.str();
+      v[1]= name;
+
+
+        for(int i=0; i<v.size(); ++i)
+        {
+           cout <<v[i];
+        }
+
+
+
+
+
+
+    //  string e;
+    //  monFlux.get(e);
+    //  cout<< e <<endl;
+
+
+
+//    stringstream ss;
+  //  ss << "Hello, world, " << a << b << c << d;
+//    string s = ss.str();
+//    cout << s <<endl;
+
+//    v[0] = a;
+//    v[1] = b;
+//    v[2] = c;
+//    v[3] = d;
+  //  cout << v.size() << endl ;
+  //  for(int i=0; i<v.size(); ++i)
+  //      cout << v[i] << endl;
+//cout<<endl ;
+
+    }
+    else
+    {
+        cout << "ERREUR: Impossible d'ouvrir le fichier en lecture." << endl;
+    }
+return 0;
+
+}
