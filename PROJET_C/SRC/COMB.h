@@ -26,7 +26,7 @@ class Comb : public Gate {
 
     //fonction virtuelle pure
     virtual bool calcul_output(input map(string,net));
-    virtual bool afficher();
+    virtual void afficher();
 
 
 }

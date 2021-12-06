@@ -42,7 +42,7 @@ class Gate {
 
     //fonction virtuelle pure
     virtual bool calcul_output(input map(string,net))=0;
-    virtual bool afficher()=0;
+    virtual void afficher()=0;
 
 
 }
