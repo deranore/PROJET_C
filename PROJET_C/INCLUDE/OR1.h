@@ -2,12 +2,15 @@
 //cslasse abstraite de porte ET 2 entrée
 //Brian Martinez
 
+#ifndef OR_1_H
+#define OR_1_H
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <map>
 #include "COMB.h"
+
 
 using namespace std;
 
@@ -24,3 +27,4 @@ class OR1 : public Comb {
     bool calcul_output(map<string,Net> input);
     void afficher();
 };
+#endif

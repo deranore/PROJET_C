@@ -1,8 +1,14 @@
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <map>
+//Ecrite le 07/12/2021
+//cslasse de net
+//Brian Martinez
+
+#ifndef NET_H
+#define NET_H
+  #include <iostream>
+  #include <sstream>
+  #include <string>
+  #include <vector>
+  #include <map>
 
 using namespace std;
 
@@ -26,3 +32,4 @@ class Net{
 
     void afficher();
 };
+#endif
