@@ -18,8 +18,10 @@ AND1::~AND1(){
 //Fonction virtuelle pure
 bool AND1::calcul_output(map<string,Net> input){
   bool output = 1;
-  for (vector<string>::iterator index = get_input().begin(); index != get_input().end();index++){
-    output &= input[*index].get_val();
+  unsigned int i = 0;
+  for ( vector<string>::iterator index = get_input().begin() ; index != get_input().end() ; index++,i++)
+  {
+    output &= input[get_input()[i]].get_val();
   }
   return output;
 }
