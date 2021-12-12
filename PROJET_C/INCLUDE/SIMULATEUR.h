@@ -20,9 +20,6 @@
   string url_json;
   string url_dot;
 
-  void set_url_json(string url);
-  void set_url_dot(string url);
-
   public :
   Simulateur();
   ~Simulateur();
@@ -35,18 +32,21 @@
   *Net get_input(string nom);
   *Net get_output(string nom);
   *Gate get_gate(string nom);
-  bool add_input(*Net);
-  bool add_output(*Net);
-  bool add_gate(*Gate);
+  bool add_input(*Net i);
+  bool add_output(*Net o);
+  bool add_gate(*Gate g);
   void set_input(unsigned int index);
-  void set_output(bool val);
+  void set_output(string nom,bool val);
 
-  vector<Decoupage> lexeur();
-  int parsseur(vector<Decoupage>);
-  void err_parssing(*Decoupage);
+  vector<Decoupage> lexeur_dot ();
+  int parsseur_dot (vector<Decoupage> dot);
+  vector<Decoupage> lexeur_json ();
+  int parsseur_json (vector<Decoupage> json);
+  void err_parssing_dot(*Decoupage err_w);
+  void err_parssing_json(*Decoupage err_w);
 
-  int Kernel();10
-  void err_simulation(*Gate,*Net);
+  int Kernel();
+  void err_simulation(*Gate err_g,*Net err_n);
 
   void print();
 
