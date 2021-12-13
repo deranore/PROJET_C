@@ -18,8 +18,17 @@ using namespace std;
 #define  pointpoint_is_missing   3
 #define  crochet_open_is_missing   4
 #define  return_line_is_missing   5
-#define  accolade_open_is_missing2   6
-
+#define  keyword_name_is_missing   6
+#define  accolade_close_or_keyword_name_is_missing   7
+#define  variable_deja_defini 8
+#define  var_name_is_missing 9
+#define  virgule_is_missing 10
+#define  wave_is_missing 11
+#define  wrong_size_of_value 12
+#define  nombre_is_missing 13
+#define  accolade_close_is_missing 14
+#define  virgule_or_return_line_is_missing 15
+#define  crochet_close_is_missing 16
 
 
 
@@ -239,7 +248,7 @@ int main () {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   int erreur2;
-  vector<string> vnomjson(1); // def du vecteur qui contient les noms des signaus --> doit commencer a 1 piour faciliter la comparaison
+  vector<string> vnomjson(1); // def du vecteur qui contient les noms des signaux --> doit commencer a 1 piour faciliter la comparaison
   vector<bool> vvaleurjson;
   int t2=0;
   int u2=0;
@@ -411,7 +420,7 @@ int main () {
                              break;
 
                 default:
-                        erreur2=accolade_open_is_missing2;
+                        erreur2=accolade_open_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -426,7 +435,12 @@ int main () {
                                cout<<"name vu"<<endl;
                                etat_courant2 = STATE7;
                              }
-                            break;
+                             else
+                             {
+                               erreur2=keyword_name_is_missing;
+                               etat_courant2=ERREUR;
+                             }
+                             break;
 
 
                 case ESPACE:etat_courant2 = STATE6;
@@ -439,7 +453,7 @@ int main () {
                 case ACCOLADEC:etat_courant2= STATE14; //--> declaration vide on attend une , après donc state14
                                break;
 
-                default:erreur2=6;
+                default:erreur2=accolade_close_or_keyword_name_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -462,7 +476,7 @@ int main () {
                 case TAB:etat_courant2= STATE7;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=pointpoint_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -477,26 +491,26 @@ int main () {
                          t2=u2-1;
                          for(t2; t2!=0 ; t2=t2-1)
                          {
-                            if (c2.getname() != vnomjson[t2])
+                            if (c2.getname() != vnomjson[t2])// on verifie si la variable n'est pas déjà défini
                            {
                              cout<<"le nom est valide pour un input"<<endl;
-                             // while name var isn't used --> possible to save net
+                             // tant que le nom de variable n'est pas deja utilisé --> possible to save
                            }
                             else
                             {
                               cout<<"la variable " << vnomjson[t2] << " est déja définie"<<endl;
                               readytosave2=0; // if bool =0 , var already define, impossible to save
-                              erreur2=15;
+                              erreur2=variable_deja_defini;
                               etat_courant2=ERREUR;
                             }
                          }
-                        if (readytosave2==1)//
+                        if (readytosave2==1)// comme aucune variable defini a ce nom on peut l'enregistrer
                           {
                               nom = c2.getname();// save the name
-                              nom.erase( 0, 1);
+                              nom.erase( 0, 1); // on supprime les simple quote ' '
                               nom.erase( nom.size() - 1);
-                              mymap[nom];
-                              vnomjson.push_back(nom);
+                              mymap[nom];//
+                              vnomjson.push_back(nom);// on recupere le nom pour etre sur de ne pas avoir de prochaine variable avec ce nom
                           }
                         etat_courant2=STATE9;
                         break;
@@ -509,7 +523,7 @@ int main () {
                 case TAB:etat_courant2= STATE8;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=var_name_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -531,7 +545,7 @@ int main () {
                 case TAB:etat_courant2= STATE9;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=virgule_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -544,7 +558,6 @@ int main () {
               {
                 case CHAINE:if (c2.getname()=="wave")
                              {
-                               cout<<"wave vu"<<endl;
                                etat_courant2 = STATE11;
                              }
                             break;
@@ -557,7 +570,7 @@ int main () {
                 case TAB:etat_courant2= STATE10;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=wave_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -580,7 +593,7 @@ int main () {
                 case TAB:etat_courant2= STATE11;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=pointpoint_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -601,7 +614,7 @@ int main () {
                                if (taillevaleurfixe!=taillevaleur)// les series de chiffre ne font pas la meme taile --> erreur
                                {
                                 etat_courant2==ERREUR;
-                                erreur2=10;
+                                erreur2=wrong_size_of_value;
                                 break;
                                }
                              }
@@ -631,8 +644,7 @@ int main () {
 
                                p++;
                              } while(p<taillevaleur);
-                             p=0; // remise a 0 du compteur
-
+                             p=0; // remise a 0 du compteur pour changer de vecteur
                              taillevaleurfixe=taillevaleur; // la premiere serie de chiffre donne la taille pour les autres
                              etat_courant2 = STATE13;
                              break;
@@ -645,7 +657,7 @@ int main () {
                 case TAB:etat_courant2= STATE12;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=nombre_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -666,7 +678,7 @@ int main () {
                 case TAB:etat_courant2= STATE13;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=accolade_close_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -690,7 +702,7 @@ int main () {
                 case ENDLINE:etat_courant2= STATE15;
                              break;
 
-                default:erreur2=7;
+                default:erreur2=virgule_or_return_line_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -711,7 +723,7 @@ int main () {
                 case TAB:etat_courant2= STATE15;
                          break;
 
-                default:erreur2=7;
+                default:erreur2=crochet_close_is_missing;
                         etat_courant2 = ERREUR;
               }
               itr2++;
@@ -723,18 +735,12 @@ int main () {
               switch (c2.gettype())
               {
                 case ACCOLADEC:etat_courant2 = END;
-                              cout<< "vers la fin"<<endl;
-                              break;
-
-
+                               break;
                 case ESPACE:etat_courant2 = STATE16;
                             break;
-
-
                 case TAB:etat_courant2= STATE16;
                          break;
-
-                default:erreur2=7;
+                default:erreur2=accolade_close_is_missing;
                         etat_courant2= ERREUR;
               }
               itr2++;
@@ -749,7 +755,7 @@ int main () {
 
 
             case ERREUR:cout<< "je suis dans une erreur et je sors"<<endl;
-                        code=1;
+                        code=1;// pour faire un exit 1 juste après le switch d'erreur
                         break;
           }
 
@@ -759,72 +765,74 @@ int main () {
 
               switch (erreur2)
               {
-                case 1:cout <<"erreur1: on attend le caractère '{' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case accolade_open_is_missing:cout <<"erreur1: on attend le caractère '{' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 2:cout <<"erreur2: on attend le mot clé 'signal' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case keyword_signal_is_missing:cout <<"erreur2: on attend le mot clé 'signal' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 3:cout <<"erreur3: on attend le caractère ':' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case pointpoint:cout <<"erreur3: on attend le caractère ':' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 4:cout <<"erreur4: on attend le caractère '[' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case crochet_open_is_missing:cout <<"erreur4: on attend le caractère '[' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 5:cout <<"erreur5: on attend le caractère '\n' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case return_line_is_missing:cout <<"erreur5: on attend le caractère '\n' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 14:cout <<"erreur6: on attend le caractère '{' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case keyword_name_is_missing:cout <<"erreur6: on attend le mot 'name' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 6:cout <<"erreur6: on attend le mot 'name' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case accolade_close_or_keyword_name_is_missing:cout <<"erreur7: on attend le caractere { ou un nom de variable et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 7:cout <<"erreur7: on attend le caractère ':' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case variable_deja_defini:cout <<"erreur8: Cette variable est déjà défini "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 8:cout <<"erreur8: on attend un nom valable comme 'I1' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case var_name_is_missing:cout <<"erreur9: on attend un nom  de variable valable comme 'I1' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 9:cout <<"erreur9: on attend le caractère ',' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case virgule_is_missing:cout <<"erreur10: on attend le caractère ',' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 10:cout <<"erreur10: on attend le caractère 'wave' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case wave_is_missing:cout <<"erreur11: on attend le caractère 'wave' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 11:cout <<"erreur11: on attend le caractère ':' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case wrong_size_of_value:cout <<"erreur12: on attend la meme taille de bool pour chaque entrée   "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 12:cout <<"erreur12: on attend une serie de 0 et de 1 (ou de .) et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case nombre_is_missing:cout <<"erreur13: on attend une serie de 0 et de 1 (ou de .) et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
-                case 13:cout <<"erreur13: on attend le caractère '}' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                case accolade_close_is_missing:cout <<"erreur14: on attend le caractère '}' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                break;
+
+                case virgule_or_return_line_is_missing:cout <<"erreur15: on attend le caractère ',' ou returnline et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
+                break;
+
+                case crochet_close_is_missing:cout <<"erreur16: on attend le caractère ']' et on a recu "<< c2.getname()<<" à la ligne "<< c2.getline() << endl;
                 break;
 
               }
 
-              if (code==1)// si on est rentré dans erreur
+              if (code==1)// si on est rentré dans l'état erreur
               {
-                exit(1);
+                exit(1); // on sort du programme
               }
 
         }
-        itr2++;
+        itr2++;// tant que l'état de la fsm est différent de END on regarde le mot suivant
     } while (itr2 < v2.end());
 
 
 
 
-    map<string, vector<bool> >::const_iterator itMap ;
+    map<string, vector<bool> >::const_iterator itMap ;// definition de l'iterateur de la map
     for(itMap = mymap.begin() ; itMap!=mymap.end() ; ++itMap) {
-    // un iterateur sur map permet de récupérer la clé et la valeur
-    //      *itMap est de type pair<string, int>(
-    // itMap->first ou (*itMap).first : accès à la clé
-    // itMap->second ou (*itMap).sedond : accès à la valeur
-          cout << itMap->first<<endl;
+          cout << itMap->first<<endl;// affichage des nom de variable
           for (int i=0; i<9; i++)
           {
-             cout<<itMap->second[i]<<endl;
+             cout<<itMap->second[i]<<endl; // affichage des vecteur de bool
           }
 
        }
