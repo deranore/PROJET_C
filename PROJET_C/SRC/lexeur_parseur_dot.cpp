@@ -12,10 +12,15 @@ using namespace std;
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <NET.h>
 
 
 
 int main () {
+
+  map<string,vector<string>> input;
+  map<string,string> out;
+  map<string,string> type;
 
   ifstream monFlux("and_xor.dot");
   stringstream key;
@@ -36,8 +41,6 @@ int main () {
   vector<string> vgate;
   vector<string> vnetin;
   vector<string> vnetout;
-  vector<string> vnetinfinal;
-  vector<string> vnetoutfinal;
   vector<string> vvar(1);// doit commencer a 1 pour la comparaison des namevar
   vector<string>::iterator itr2 ;
   char buffer1[300]; // rempli de la saisie
@@ -193,6 +196,7 @@ int main () {
     }
 
     if (buffer1[i]== '=')
+
     {
       key<<buffer1[i];
       i++;
@@ -295,21 +299,17 @@ int main () {
     int t=0;
     int u=0;
     bool readytosave=1; // by default it is possible to save
-
-    enum etat {STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATE8, STATE9, STATE10, ERREUR};
+    enum etat {STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATE8, STATE9, STATE10, END,ERREUR};
     etat etat_courant = STATE1;
     //vector<Decoupage>::iterator itr ;
     itr = v1.begin();
-
     do
     {Decoupage c = *itr;
-
     while (etat_courant!=ERREUR)
     {
       switch (etat_courant)
          {
          case STATE1: // have to detect digraphe keyword
-
             switch (c.gettype())
             {
               case CHAINE:
@@ -328,32 +328,25 @@ int main () {
                             etat_courant= ERREUR;
                           }
                           break;
-
-
               case ESPACE://itr++;
                           //c = *itr;
                           etat_courant = STATE1;
                           break;
-
               case TAB://itr++;
                        //c = *itr;
                        etat_courant= STATE1;
                        break;
-
               default://itr++;
                       //c = *itr;
                       erreur=1;
                       etat_courant= ERREUR;
-
             }
             itr++;
             c = *itr;
             break;
           //itr++;
         //  c = *itr;
-
           case STATE2: // have to detect namefile
-
              switch (c.gettype())
              {
                case CHAINE:
@@ -362,18 +355,15 @@ int main () {
                            //c = *itr;
                            etat_courant=STATE3;
                            break;
-
                case ESPACE://itr++;
                            //c = *itr;
                            cout << "je suis bien un espace" <<endl;
                            etat_courant = STATE2;
                            break;
-
                case TAB://itr++;
                         //c = *itr;
                         etat_courant= STATE2;
                         break;
-
                default://itr++;
                        //c = *itr;
                        erreur=2;
@@ -382,25 +372,19 @@ int main () {
               itr++;
               c = *itr;
               break;
-
-
             case STATE3:// have to detect accoladeo
-
                switch (c.gettype())
                {
                 case ACCOLADEO:cout<<"acco o vu"<<endl;
                                etat_courant=STATE4;
                                break;
-
                 case ESPACE://itr++;
                             //c = *itr;
                             etat_courant = STATE3;
                             break;
-
-                case TAB:
+                case TAB:erreur= 10;
                           etat_courant= STATE3;
                           break;
-
                 default:
                         erreur=3;
                         etat_courant= ERREUR;
@@ -408,12 +392,7 @@ int main () {
                 itr++;
                 c = *itr;
                 break;
-
-
-
-
             case STATE4: // have to detect namevar
-
                switch (c.gettype())
                {
                  case CHAINE:
@@ -423,20 +402,15 @@ int main () {
                              u=u+1;
                              t=u-1;
                              break;
-
                  case ESPACE:
                              etat_courant = STATE4;
                              break;
-
                  case TAB:
                           etat_courant= STATE4;
                           break;
-
                  case ACCOLADEC:
-
-                          etat_courant= ERREUR; // to modify by end of fsm
+                          etat_courant= END
                           break;
-
                  default:
                          erreur=4;
                          etat_courant= ERREUR;
@@ -444,46 +418,33 @@ int main () {
               itr++;
               c = *itr;
               break;
-
               case STATE5: // have to detect [ or ->
-
                   switch (c.gettype())
                   {
                     case CROCHET0:
                                  etat_courant=STATE6;
                                  break;
-
                     case FLECHE:
-
-                                  etat_courant=STATE11;
+                                  etat_courant=ERREUR;
                                   itr=itr-1; // on observe la var juste avant
                                   for(itr2 = vnetin.begin() ; itr2 != vnetin.end() ; ++itr2)
                                   {
-                                    if (c.getname()==vnetin[itr2] )
+                                    if (c.getname()==vnetin[itr2] )  // net is valid (was declared before)
                                     {
-                                      // net is valid (was declared before)
-                                      ////////////////////////////
-                                      // if net is input continue (check with Brian class)
                                       vnetinfinal.pushback(c.getname()); //save in good order the input net
-                                      // increment demarre à 0 et ++
                                       etat_courant= STATE12;
                                     }
                                   }
                                   itr=itr+1; // on observe  de nouveau la var actuelle
                                   // je dois verifier avant d'aller en state 11 que
                                   // le nom de var existe bien dans le vecteur input
-
                                   break;
-
-
                     case ESPACE:
                                 etat_courant = STATE5;
                                 break;
-
                     case TAB:
                              etat_courant= STATE5;
                              break;
-
                     default:
                             erreur=5;
                             etat_courant= ERREUR;
@@ -491,11 +452,7 @@ int main () {
                 itr++;
                 c = *itr;
                 break;
-
-
-
               case STATE6: // have to detect label
-
                  switch (c.gettype())
                  {
                      case CHAINE:
@@ -504,22 +461,18 @@ int main () {
                                    cout<<"label vu"<<endl;
                                    etat_courant = STATE7;
                                  }
-
                                  else
                                  {
                                    erreur=6;
                                    etat_courant= ERREUR;
                                  }
                                  break;
-
                      case ESPACE:
                                  etat_courant = STATE6;
                                  break;
-
                      case TAB:
                               etat_courant= STATE6;
                               break;
-
                      default:
                              erreur=8;
                              etat_courant= ERREUR;
@@ -527,9 +480,7 @@ int main () {
                 itr++;
                 c = *itr;
                 break;
-
                case STATE7: // have to detect equal
-
                   switch (c.gettype())
                   {
                       case EQUAL:
@@ -538,7 +489,6 @@ int main () {
                                     cout<<"egal vu"<<endl;
                                     etat_courant = STATE8;
                                   }
-
                                   else
                                   {
                                     cout<<"pas de egal vu"<<endl;
@@ -546,15 +496,12 @@ int main () {
                                     etat_courant= ERREUR;
                                   }
                                   break;
-
                       case ESPACE:
                                   etat_courant = STATE7;
                                   break;
-
                       case TAB:
                                etat_courant= STATE7;
                                break;
-
                       default:
                               erreur=8;
                               etat_courant= ERREUR;
@@ -562,9 +509,7 @@ int main () {
                   itr++;
                   c = *itr;
                   break;
-
                case STATE8: // have to detect type: "output" / "input" / "gate"
-
                   switch (c.gettype())
                   {
                       case CHAINE:  if (c.getname()=="\"INPUT\"")
@@ -650,7 +595,6 @@ int main () {
                                       }
                                       etat_courant=STATE9;
                                     }
-
                                     if (c.getname()=="\"XOR2\"")
                                     {
                                       // check if var is not alreay assigned
@@ -678,22 +622,18 @@ int main () {
                                       }
                                       etat_courant=STATE9;
                                     }
-
                                     else
                                     {
                                       erreur=10;
                                       etat_courant=ERREUR;
-                                    }
+                                    }erreur= 10;
                                     break;
-
                       case ESPACE:
                                   etat_courant = STATE8;
                                   break;
-
                       case TAB:
                                etat_courant= STATE8;
                                break;
-
                        default:
                                erreur=5;
                                etat_courant= ERREUR;
@@ -701,23 +641,18 @@ int main () {
                     itr++;
                     c = *itr;
                     break;
-
               case STATE9: // have to detect ]
-
                 switch (c.gettype())
                 {
                     case CROCHETC:
                                   etat_courant=STATE10;
                                   break;
-
                     case ESPACE:
                                 etat_courant = STATE9;
                                 break;
-
                     case TAB:
                              etat_courant= STATE9;
                              break;
-
                     default:
                             erreur=5;
                             etat_courant= ERREUR;
@@ -725,27 +660,21 @@ int main () {
                 itr++;
                 c = *itr;
                 break;
-
               case STATE10: // have to detect ;
-
                 switch (c.gettype())
                 {
                     case POINTV:
                                   etat_courant=STATE4;
                                   break;
-
                     case ACCOLADEC:
                                   etat_courant=ERREUR;
                                   break;
-
                     case ESPACE:
                                 etat_courant = STATE9;
                                 break;
-
                     case TAB:
                              etat_courant= STATE9;
                              break;
-
                     default:
                             erreur=5;
                             etat_courant= ERREUR;
@@ -753,10 +682,7 @@ int main () {
                  itr++;
                  c = *itr;
                  break;
-
-
               case STATE11: // have to detect if the net is valid
-
                 switch (c.gettype())
                 {
                     case CHAINE:
@@ -769,30 +695,27 @@ int main () {
                                     // if net is input continue (check with Brian class)
                                     vnetinfinal.pushback(c.getname()); //save in good order the input net
                                     // increment demarre à 0 et ++
-                                    etat_courant= STATE12;
+                                    etat_courant= ERREUR;
+                                    erreur= 10;
                                   }
                                 }
-
                                 for(itr2 = vgate.begin() ; itr2 != vgate.end() ; ++itr2)
                                 {
                                   if (c.getname()==vgate[itr2])
-
+                                    //regardé par la suite
                                   {
                                     // this is not a net but a gate
-                                    erreur= 10;
-                                    etat_courant=ERREUR;
+
+                                    etat_courant=STATE12;
                                   }
                                 }
                                 break;
-
                     case ESPACE:
                                 etat_courant = STATE11;
                                 break;
-
                        case TAB:
                                 etat_courant= STATE11;
                                 break;
-
                        default:
                                erreur=10;
                                etat_courant= ERREUR;
@@ -800,10 +723,7 @@ int main () {
                 itr++;
                 c = *itr;
                 break;
-
-
              case STATE12: // have to detect namegate
-
                 switch (c.gettype())
                 {
                       case CHAINE:
@@ -832,15 +752,12 @@ int main () {
                                     }
                                   }
                                   break;
-
                       case ESPACE:
                                   etat_courant = STATE9;
                                   break;
-
                          case TAB:
                                   etat_courant= STATE9;
                                   break;
-
                          default:
                                  erreur=5;
                                  etat_courant= ERREUR;
@@ -848,46 +765,35 @@ int main () {
                 itr++;
                 c = *itr;
                 break;
+              case END: cout<< "Fin du fichier dot création des objets"<<endl;
+                        Net() creator;
+                        for(it=vnetinfinal.begin() ; it!=vnetinfinal.end() ; ++it){
+                          add_input(creator.set_name(*it));
+                        }
+                        for(it=vnetoutfinal.begin() ; it!=vnetoutfinal.end() ; ++it){
+                          add_output(creator.set_name(*it));
+                        }
 
-
-
-
-
-
-              case ERREUR: // have to detect equal
-                          cout<< "je suis dans une erreur et je devrais sortir"<<endl;
-                          itr++;
-                          c = *itr;
-                          break;
-
+              case ERREUR:cout<< "je suis dans une erreur et je devrais sortir"<<endl;// have to detect equal
+                            itr++;
+                            c = *itr;
+                            break;
 
             }
-
-
-
-
-
           switch (erreur)
           {
-
             case 1:cout <<"erreur1: on attend le mot clé digraphe et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << "qui est un" << c.gettype()<< endl;
                    break;
-
             case 2:cout <<"erreur2: on attend le nom du fichier et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << "qui est un" << c.gettype()<< endl;
                    break;
-
             case 3:cout <<"erreur3: on attend le caractère { et on a recu "<< c.getname()<<" a la ligne"<< c.getline() << "qui est un" << c.gettype()<< endl;
                    break;
-
             case 4:cout <<"erreur4: on attend un nom et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << endl;
                    break;
-
             case 5:cout <<"erreur5: on attend le caractère [ et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << "qui est un" << c.gettype()<< endl;
                    break;
-
-
           }
-
-        } itr++;
-      } while (itr < v1.end());
+        }
+        itr++;
+      }while (itr < v1.end());
     }
