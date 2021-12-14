@@ -870,12 +870,12 @@ vector<Decoupage> lexeur_dot()
       //cout << "jai vu un espace" <<endl;
       i++;
       monFlux.get(buffer1[i]);/////
-      mot = ESPACE;
-      Decoupage first(key.str(),mot,ligne);// on appelle le constructeur pour créer les diff verres
-      v1.push_back(first);
+      //mot = ESPACE;
+      //Decoupage first(key.str(),mot,ligne);// on appelle le constructeur pour créer les diff verres
+      //v1.push_back(first);
       //v.push_back(key.str());
-      key.str("");//reinit
-      key.clear();
+      //key.str("");//reinit
+      //key.clear();
     }
 
     if (buffer1[i]== '{')
@@ -1013,16 +1013,16 @@ vector<Decoupage> lexeur_dot()
     }
     if (buffer1[i]== '\t')
     {
-      key<<buffer1[i];
+      //key<<buffer1[i];
       i++;
       monFlux.get(buffer1[i]);//////
-      mot = TAB;
-      Decoupage first(key.str(),mot,ligne);// on appelle le constructeur pour créer les diff verres
-      v1.push_back(first);
+      //mot = TAB;
+      //Decoupage first(key.str(),mot,ligne);// on appelle le constructeur pour créer les diff verres
+      //v1.push_back(first);
       //v.push_back(key.str());
-      key.str("");//reinit
-      key.clear();
-      end=1;
+      //key.str("");//reinit
+      //key.clear();
+      //end=1;
     }
   } while(i<taille);
     return v1;
