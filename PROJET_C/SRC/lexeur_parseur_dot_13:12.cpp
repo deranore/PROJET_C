@@ -15,6 +15,30 @@ using namespace std;
 #include <NET.h>
 
 
+#define  keyword_digraph_or_graph_is_missing   1
+#define  name_of_file_is_missing_or_not_correct   2
+#define  accolade_open_is_missing   3
+#define  var_name_is_missing     4
+#define  vnet_in_is_missing_or_not_define 5
+#define  crochet_open_or_fleche_is_missing   6
+#define  keyword_label_is_uncorrect 7
+#define  keyword_label_is_missing 8
+#define  equal_is_missing 9
+#define  var_input_already_defined 10
+#define  var_output_already_defined 11
+#define  var_gate_and2_already_defined 12
+#define  var_gate_xor2_already_defined 13
+#define  keyword_typeofgate_input_or_output_is_uncorrect 14
+#define  keyword_typeofgate_input_or_output_is_missing 15
+#define  crochet_close_is_missing 16
+#define  pointv_is_missing 17
+#define  waiting_for_a_gate_not_a_input_net 18
+#define  waiting_for_a_gate_not_a_output_net 19
+#define  gate_to_assign_is_missing 20
+#define  pointv_or_fleche_is_missing 21
+
+
+
 
 int main () {
 
@@ -41,7 +65,7 @@ int main () {
   vector<string> vnetout;// vecteur qui stocke les net out définis
   vector<string> vvar(1);// doit commencer a 1 pour la comparaison des namevar
   vector<string>::iterator itr2 ;
-  char buffer1[1000]; // tableau qui recoit les caractères du fichier (sert de buffer) 
+  char buffer1[1000]; // tableau qui recoit les caractères du fichier (sert de buffer)
   int b=0;
 
 
@@ -292,7 +316,7 @@ int main () {
     int t=0;// t et u servent dans le système de boucle pour vérifier qu'une déclaration est valable qu'une fois (STATE8)
     int u=0;//
     bool readytosave=1; // variable qui permet d'enregistrer ou non un porte, une entrée ou une sortie   (STATE8)
-    enum etat {STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATE8, STATE9, STATE10, END,ERREUR};
+    enum etat {STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATE8, STATE9, STATE10, STATE12, STATE13, END, ERREUR};
     etat etat_courant = STATE1;// on début pour le STATE1
     itr = v1.begin();// on remet l'itarateur au debut du vecteur
 
@@ -322,7 +346,7 @@ int main () {
                           break;
               case TAB:etat_courant= STATE1;
                        break;
-              default:erreur=1;
+              default:erreur=keyword_digraph_or_graph_is_missing;
                       etat_courant= ERREUR;
             }
             itr++; // on incremnte
@@ -340,7 +364,7 @@ int main () {
                            break;
                case TAB:etat_courant= STATE2;
                         break;
-               default:erreur=2;
+               default:erreur=name_of_file_is_missing_or_not_correct;
                        etat_courant= ERREUR;
               }
               itr++;
@@ -357,7 +381,7 @@ int main () {
                 case TAB:erreur= 10;
                           etat_courant= STATE3;
                           break;
-                default:erreur=3;
+                default:erreur=accolade_open_is_missing;
                         etat_courant= ERREUR;
                 }
                 itr++;
@@ -381,7 +405,7 @@ int main () {
                           etat_courant= END; // si on trouve une accolade fermé --> fin du fichier
                           break;
                  default:
-                         erreur=4;
+                         erreur=var_name_is_missing;
                          etat_courant= ERREUR;
                 }
               itr++;
@@ -408,7 +432,7 @@ int main () {
                                 else // si ce n'est pas le cas on a une erreur
                                 {
                                   etat_courant=ERREUR; // si on ne rempli pas la condition suivante c'est une erreur
-                                  erreur=5;
+                                  erreur=vnet_in_is_missing_or_not_define;
                                 }
                                 itr=itr+1; // on observe de nouveau le mot actuel
                                 break;
@@ -419,7 +443,7 @@ int main () {
                              etat_courant= STATE5;
                              break;
                     default:
-                            erreur=5;
+                            erreur=crochet_open_or_fleche_is_missing;
                             etat_courant= ERREUR;
                    }
                 itr++;
@@ -436,7 +460,7 @@ int main () {
                                  }
                                  else
                                  {
-                                   erreur=6;
+                                   erreur=keyword_label_is_uncorrect;
                                    etat_courant= ERREUR;
                                  }
                                  break;
@@ -447,7 +471,7 @@ int main () {
                               etat_courant= STATE6;
                               break;
                      default:
-                             erreur=8;
+                             erreur=keyword_label_is_missing;
                              etat_courant= ERREUR;
                   }
                 itr++;
@@ -459,14 +483,7 @@ int main () {
                       case EQUAL:
                                   if (c.getname()=="=")
                                   {
-                                    cout<<"egal vu"<<endl;
                                     etat_courant = STATE8;
-                                  }
-                                  else
-                                  {
-                                    cout<<"pas de egal vu"<<endl;
-                                    erreur=6;
-                                    etat_courant= ERREUR;
                                   }
                                   break;
                       case ESPACE:
@@ -476,7 +493,7 @@ int main () {
                                etat_courant= STATE7;
                                break;
                       default:
-                              erreur=8;
+                              erreur=equal_is_missing;
                               etat_courant= ERREUR;
                   }
                   itr++;
@@ -499,7 +516,7 @@ int main () {
                                         {
                                           cout<<"la variable " << vvar[t] << " est déja définie"<<endl;
                                           readytosave=0; // if bool =0 , var already define, impossible to save
-                                          erreur=10;
+                                          erreur=var_input_already_defined;
                                           etat_courant=ERREUR;
                                         }
                                       }
@@ -509,8 +526,9 @@ int main () {
                                         // have to create the net here
                                         vnetin.push_back(vvar[u]) // save the gate in a vector
                                         cout << " on enregistre la valeur ici" << endl;
+                                        etat_courant=STATE9;
                                       }
-                                      etat_courant=STATE9;
+
                                     }
 
                                     if (c.getname()=="\"OUTPUT\"")
@@ -527,7 +545,7 @@ int main () {
                                         {
                                           cout<<"la variable " << vvar[t] << " est déja définie"<<endl;
                                           readytosave=0; // if bool ==0 , var already define, impossible to save
-                                          erreur=10;
+                                          erreur=var_output_already_defined;
                                           etat_courant=ERREUR;
                                         }
                                       }
@@ -537,8 +555,9 @@ int main () {
                                         // have to create the net here
                                         vnetout.push_back(vvar[u]) // save the gate in a vector
                                         cout << " on enregistre la valeur du OUTPUT ici" << endl;
+                                        etat_courant=STATE9;
                                       }
-                                      etat_courant=STATE9;
+
                                     }
 
                                     if (c.getname()=="\"AND2\"")
@@ -555,7 +574,7 @@ int main () {
                                         {
                                           cout<<"la variable " << vvar[t] << " est déja définie"<<endl;
                                           readytosave=0; // if bool ==0 , var already define, impossible to save
-                                          erreur=10;
+                                          erreur=var_gate_and2_already_defined;
                                           etat_courant=ERREUR;
                                         }
                                       }
@@ -565,8 +584,9 @@ int main () {
                                         // have to create the net here
                                         vgate.push_back(vvar[u]) // save the gate in a vector
                                         cout << " on enregistre la valeur du AND2 ici" << endl;
+                                        etat_courant=STATE9;
                                       }
-                                      etat_courant=STATE9;
+
                                     }
                                     if (c.getname()=="\"XOR2\"")
                                     {
@@ -582,7 +602,7 @@ int main () {
                                         {
                                           cout<<"la variable " << vvar[t] << " est déja définie"<<endl;
                                           readytosave=0; // if bool ==0 , var already define, impossible to save
-                                          erreur=10;
+                                          erreur=var_gate_xor2_already_defined;
                                           etat_courant=ERREUR;
                                         }
                                       }
@@ -592,12 +612,13 @@ int main () {
                                         // have to create the net here
                                         vgate.push_back(vvar[u]) // save the gate in a vector
                                         cout << " on enregistre la valeur du XOR2 ici" << endl;
+                                        etat_courant=STATE9;
                                       }
-                                      etat_courant=STATE9;
+
                                     }
                                     else
                                     {
-                                      erreur=10;
+                                      erreur=keyword_typeofgate_input_or_output_is_uncorrect;
                                       etat_courant=ERREUR;
                                     }erreur= 10;
                                     break;
@@ -608,7 +629,7 @@ int main () {
                                etat_courant= STATE8;
                                break;
                        default:
-                               erreur=5;
+                               erreur=keyword_typeofgate_input_or_output_is_missing;
                                etat_courant= ERREUR;
                        }
                     itr++;
@@ -627,7 +648,7 @@ int main () {
                              etat_courant= STATE9;
                              break;
                     default:
-                            erreur=5;
+                            erreur=crochet_close_is_missing;
                             etat_courant= ERREUR;
                 }
                 itr++;
@@ -649,7 +670,7 @@ int main () {
                              etat_courant= STATE9;
                              break;
                     default:
-                            erreur=5;
+                            erreur=pointv_is_missing;
                             etat_courant= ERREUR;
                  }
                  itr++;
@@ -678,7 +699,7 @@ int main () {
                                     if (c.getname()==vnet[itr2])
                                     {
                                       etat_courant= ERREUR;  // on attend une porte et on a une net d'entrée
-                                      erreur=5;
+                                      erreur=waiting_for_a_gate_not_a_input_net;
                                     }
                                   }
 
@@ -687,7 +708,7 @@ int main () {
                                     if (c.getname()==vnet[itr2])
                                     {
                                       etat_courant= ERREUR;  // on attend une porte et on a une net de sortie
-                                      erreur=5;
+                                      erreur=waiting_for_a_gate_not_a_output_net;
                                     }
                                   }
                                   break;
@@ -698,7 +719,7 @@ int main () {
                                   etat_courant= STATE9;
                                   break;
                          default:
-                                 erreur=5;
+                                 erreur=gate_to_assign_is_missing;
                                  etat_courant= ERREUR;
                 }
                 itr++;
@@ -743,7 +764,7 @@ int main () {
                                 break;
                     case TAB:etat_courant= STATE9;
                              break;
-                    default:erreur=5;
+                    default:erreur=pointv_or_fleche_is_missing;
                             etat_courant= ERREUR;
                  }
                  itr++;
@@ -766,16 +787,49 @@ int main () {
             }
           switch (erreur)
           {
-            case 1:cout <<"erreur1: on attend le mot clé digraphe et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << "qui est un" << c.gettype()<< endl;
+            case keyword_digraph_or_graph_is_missing:cout <<"erreur1: on attend le mot clé digraphe ou graphe et on a recu "<< c.getname()<<" a la ligne "<<c.getline() << endl;
                    break;
-            case 2:cout <<"erreur2: on attend le nom du fichier et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << "qui est un" << c.gettype()<< endl;
+            case name_of_file_is_missing_or_not_correct:cout <<"erreur2: on attend le nom du fichier et on a recu "<< c.getname()<<" a la ligne "<<c.getline() << endl;
                    break;
-            case 3:cout <<"erreur3: on attend le caractère { et on a recu "<< c.getname()<<" a la ligne"<< c.getline() << "qui est un" << c.gettype()<< endl;
+            case accolade_open_is_missing:cout <<"erreur3: on attend le caractère { et on a recu "<< c.getname()<<" a la ligne "<< c.getline() << endl;
                    break;
-            case 4:cout <<"erreur4: on attend un nom et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << endl;
+            case var_name_is_missing:cout <<"erreur4: on attend un nom pour une variable et on a recu "<< c.getname()<<" a la ligne "<< endl;
                    break;
-            case 5:cout <<"erreur5: on attend le caractère [ et on a recu "<< c.getname()<<" a la ligne"<<c.getline() << "qui est un" << c.gettype()<< endl;
+            case vnet_in_is_missing_or_not_define:cout <<"erreur5: on attend un net d'entrée et on a recu "<< c.getname()<<" a la ligne "<< endl;
                    break;
+
+            case crochet_open_or_fleche_is_missing:cout <<"erreur6: on attend le caractère [ ou -> et on a recu "<< c.getname()<<" a la ligne "<<c.getline() << endl;
+                   break;
+            case keyword_label_is_uncorrect:cout <<"erreur7: on attend le mot label et on a recu comme mot: "<< c.getname()<<" a la ligne "<<c.getline() << endl;
+                   break;
+            case keyword_label_is_missing:cout <<"erreur8: on attend le mot label mais on a recu: "<< c.getname()<<" a la ligne "<< c.getline() << endl;
+                   break;
+            case equal_is_missing:cout <<"erreur9: on attend le caractère = et on a recu: "<< c.getname() << " a la ligne "<< c.getline()<< endl;
+                   break;
+            case var_input_already_defined:cout <<"erreur10: la variable d'entrée "<< c.getname()<<" de la ligne"<< c.getline() << " a deja été définie" << endl;
+                   break;
+            case var_output_already_defined:cout <<"erreur11: la variable de sortie "<< c.getname()<<" de la ligne"<< c.getline() << " a deja été définie" << endl;
+                   break;
+            case var_gate_and2_already_defined:cout <<"erreur12: la variable "<< c.getname()<<" de la ligne"<< c.getline() << "définissant un and2 a déja été définie" << endl;
+                   break;
+            case var_gate_xor2_already_defined:cout <<"erreur13: la variable "<< c.getname()<<" de la ligne"<< c.getline() << "définissant un xor2 a déja été définie" << endl;
+                   break;
+            case keyword_typeofgate_input_or_output_is_uncorrect:cout <<"erreur14: on attend le mot clé input, ouput ou un type de gate et on a recu comme mot: "<< c.getname()<<" a la ligne "<<c.getline() << endl;
+                   break;
+            case keyword_typeofgate_input_or_output_is_missing:cout <<"erreur15: on attend le mot clé input, ouput ou un type de gate et on a recu: "<< c.getname()<<" a la ligne "<<c.getline() << endl;
+                   break;
+            case crochet_close_is_missing:cout <<"erreur16: on attend le mot label mais on a recu: "<< c.getname()<<" a la ligne "<< c.getline() << endl;
+                   break;
+            case pointv_is_missing:cout <<"erreur17: on attend le caractère ; et on a recu: "<< c.getname() << " a la ligne "<< c.getline()<< endl;
+                   break;
+            case waiting_for_a_gate_not_a_input_net:cout <<"erreur18: on attend une porte et on a recu une  net d'entrée" << c.getname() << " a la ligne " << c.getline() << endl;
+                   break;
+            case waiting_for_a_gate_not_a_output_net:cout <<"erreur19: on attend une porte et on a recu une  net de sortie" << c.getname() << " a la ligne " << c.getline() << endl;
+                   break;
+            case gate_to_assign_is_missing:cout <<"erreur20: on attend une porte et on a recu " << c.getname() << " a la ligne " << c.getline() << endl;
+                   break;
+           case pointv_or_fleche_is_missing:cout <<"erreur21: on attend un point virgule ou une fleche et on a recu " << c.getname() << " a la ligne " << c.getline() << endl;
+                  break;
           }
         }
         itr++;
