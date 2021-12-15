@@ -994,8 +994,18 @@ void Simulateur::parsseur_dot (vector<Decoupage> dot){
                                     {
                                       if (c.getname()==*itr2)
                                       {
-                                        etat_courant= ERREUR;  // on attend une porte et on a une net de sortie
-                                        erreur=waiting_for_a_gate_not_a_output_net;
+                                        //on place un buffer entre la net et la sortie
+                                        dark_net+=1;
+                                        sstream << dark_net;
+                                        gate=c.getname();
+                                        itr-=2;
+                                        c = *itr;
+                                        type["WIRE"+sstream.str()]="WIRE";
+                                        input["WIRE"+sstream.str()].push_back(c.getname());
+                                        output["WIRE"+sstream.str()])=gate;
+                                        itr+=2;
+                                        c = *itr;
+                                        etat_courant=STATE13;
                                       }
                                     }
                                     break;
